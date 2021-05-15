@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "161265696952-031d2rol7dvlrkpomcdb2cs6m80n3kb8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "app.vantapretos.covinnotif",
+            "certificate_hash": "ef28b25bbb79bdab68d984f7e89f6d8ef70e17b2"
+          }
+        },
+        {
           "client_id": "161265696952-8dv0bh5h58ms090je3p8puf6paq6snc6.apps.googleusercontent.com",
           "client_type": 3
         }
