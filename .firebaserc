@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "covin-notif": {
+      "hosting": {
+        "app": [
+          "covin-notif"
+        ]
+      }
+    }
+  }
+}
