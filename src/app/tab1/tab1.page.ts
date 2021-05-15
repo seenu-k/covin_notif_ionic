@@ -11,6 +11,8 @@ import { DataService } from '../data.service';
 })
 export class Tab1Page implements OnInit {
 
+  userDisplayName: string;
+
   constructor(
     public actionSheetController: ActionSheetController,
     public dataService: DataService,
@@ -18,7 +20,10 @@ export class Tab1Page implements OnInit {
 
   ngOnInit() {
     this.dataService.auth.user.subscribe((user) => {
-      if(!user) {
+      if(user) {
+        this.userDisplayName = user.displayName;
+      }
+      else {
         this.presentSignInSheet();
       }
     });
