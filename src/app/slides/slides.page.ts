@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-slides',
   templateUrl: './slides.page.html',
@@ -11,9 +11,13 @@ export class SlidesPage implements OnInit {
     speed: 400
   };
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
+  }
+
+  continueToApp() {
+    this.router.navigateByUrl('/app');
   }
 
 }

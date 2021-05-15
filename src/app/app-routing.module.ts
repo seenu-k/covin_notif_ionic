@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
+import { SlidesGuard } from './guards/slides.guard';
+
 const routes: Routes = [
   {
     path: 'app',
@@ -8,7 +10,8 @@ const routes: Routes = [
   },
   {
     path: 'slides',
-    loadChildren: () => import('./slides/slides.module').then( m => m.SlidesPageModule)
+    loadChildren: () => import('./slides/slides.module').then( m => m.SlidesPageModule),
+    canActivate: [SlidesGuard]
   },
   {
     path: '',
