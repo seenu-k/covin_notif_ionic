@@ -33,7 +33,7 @@ export class Tab1Page implements OnInit {
         icon: 'logo-google',
         role: 'signin',
         handler: () => this.dataService.login().then(userCredentials => {
-            console.log(userCredentials);
+            console.log(userCredentials.user.displayName);
             return true;
           }).catch((error) => {
             console.log(error);
