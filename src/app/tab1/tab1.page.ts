@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { ActionSheetController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 
 import { DataService } from '../data.service';
 
@@ -15,6 +16,7 @@ export class Tab1Page implements OnInit {
 
   constructor(
     public actionSheetController: ActionSheetController,
+    public toastController: ToastController,
     public dataService: DataService,
   ) {}
 
@@ -37,16 +39,21 @@ export class Tab1Page implements OnInit {
         text: 'Sign In',
         icon: 'logo-google',
         role: 'signin',
-        handler: () => this.dataService.login().then(userCredentials => {
-            console.log(userCredentials.user.displayName);
-            return true;
-          }).catch((error) => {
-            console.log(error);
+        handler: () => this.dataService.login().then(() => true).catch(() => {
+            this.presentToast('Error during Sign In');
             return false;
           })
       }]
     });
     await actionSheet.present();
+  }
+
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2500
+    });
+    toast.present();
   }
 
 }
