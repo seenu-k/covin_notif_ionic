@@ -77,8 +77,4 @@ export class Tab1Page implements OnInit {
     toast.present();
   }
 
-  onDistrictChange(districtEvent: {detail: {value: number}}) {
-    console.log(districtEvent.detail.value);
-  }
-
 }
