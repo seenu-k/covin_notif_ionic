@@ -16,6 +16,11 @@
     <h4 *ngIf="userDisplayName" style="text-align: center;">Welcome, {{userDisplayName}}!</h4>
   </ion-text>
   <ion-list>
+    <ion-list-header>
+      <ion-text>
+        <h5>Location Preferences</h5>
+      </ion-text>
+    </ion-list-header>
     <ion-segment (ionChange)="locationChanged($event)" value="district">
       <ion-segment-button value="district">
         <ion-label>By District</ion-label>
@@ -41,4 +46,52 @@
       <ion-input [formControl]="pinCodeControl"></ion-input>
     </ion-item>
   </ion-list>
+
+  <ion-text>
+    <h5 style="margin-left: 18px;">Vaccine Preferences</h5>
+  </ion-text>
+
+  <ion-card>
+    <ion-item>
+      <ion-label>Name</ion-label>
+      <ion-button fill="clear" slot="end"><ion-icon name="trash" color="dark"></ion-icon></ion-button>
+    </ion-item>
+  
+    <ion-card-content>
+      <ion-list>
+        <form [formGroup]="vaccinePreferencesControl">
+          <ion-item>
+            <ion-label>Fee Type</ion-label>
+            <ion-select formControlName="fee_type_preference">
+              <ion-select-option value="Free">Free</ion-select-option>
+              <ion-select-option value="Paid">Paid</ion-select-option>
+              <ion-select-option value="Any">Any</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label>Vaccine</ion-label>
+            <ion-select formControlName="vaccine_preference">
+              <ion-select-option value="COVISHIELD">COVISHIELD</ion-select-option>
+              <ion-select-option value="COVAXIN">COVAXIN</ion-select-option>
+              <ion-select-option value="ANY">ANY</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label>Min Age Limit</ion-label>
+            <ion-select formControlName="min_age_limit_preference">
+              <ion-select-option [value]="18">18</ion-select-option>
+              <ion-select-option [value]="45">45</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </form>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="addClicked()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
 </ion-content>

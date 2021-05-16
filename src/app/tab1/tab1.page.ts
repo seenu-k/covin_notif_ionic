@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormGroup } from '@angular/forms';
 
 import { Observable } from 'rxjs';
 
 import { ActionSheetController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 
 import { DataService } from '../data.service';
 import { District, State } from '../dataModel';
@@ -23,10 +24,19 @@ export class Tab1Page implements OnInit {
   stateControl = new FormControl(null);
   districtControl = new FormControl({value: null, disabled: true});
   pinCodeControl = new FormControl('', Validators.pattern('^[1-9][0-9]{5}$'));
+  vaccinePreferencesControl = new FormGroup({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    fee_type_preference: new FormControl('Any'),
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    min_age_limit_preference: new FormControl(18),
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    vaccine_preference: new FormControl('ANY')
+  });
 
   constructor(
     public actionSheetController: ActionSheetController,
     public toastController: ToastController,
+    public alertController: AlertController,
     public dataService: DataService,
   ) {}
 
@@ -84,8 +94,43 @@ export class Tab1Page implements OnInit {
     toast.present();
   }
 
+  async presentInputName() {
+    const alert = await this.alertController.create({
+      header: 'Add a person',
+      inputs: [
+        {
+          name: 'name',
+          type: 'text',
+          placeholder: 'Enter name'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        }, {
+          text: 'Add',
+          handler: (alertData: {name: string}) => {
+            if(alertData.name) {
+              console.log(alertData.name);
+            }
+            else {
+              return false;
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
   locationChanged(locationChangeEvent: {detail: {value: string}}) {
     this.locationType = locationChangeEvent.detail.value;
+  }
+
+  addClicked() {
+    this.presentInputName();
   }
 
 }
