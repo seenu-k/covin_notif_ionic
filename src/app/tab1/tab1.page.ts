@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 
 import { Observable } from 'rxjs';
 
@@ -21,6 +21,7 @@ export class Tab1Page implements OnInit {
   districts: Observable<District[]>;
   stateControl = new FormControl(null);
   districtControl = new FormControl({value: null, disabled: true});
+  pinCodeControl = new FormControl('', Validators.pattern('^[1-9][0-9]{5}$'));
 
   constructor(
     public actionSheetController: ActionSheetController,
@@ -48,6 +49,11 @@ export class Tab1Page implements OnInit {
     this.districtControl.valueChanges.subscribe((district_id: number) => {
       if(district_id) {
         console.log(district_id);
+      }
+    });
+    this.pinCodeControl.valueChanges.subscribe((pinCode: string) => {
+      if(pinCode.match('^[1-9][0-9]{5}$')) {
+        console.log(pinCode);
       }
     });
   }
