@@ -51,15 +51,17 @@
     <h5 style="margin-left: 18px;">Vaccine Preferences</h5>
   </ion-text>
 
-  <ion-card>
+  <ion-card *ngFor="let person of personPreferencesControls">
     <ion-item>
-      <ion-label>Name</ion-label>
-      <ion-button fill="clear" slot="end"><ion-icon name="trash" color="dark"></ion-icon></ion-button>
+      <ion-text>
+        <h6>{{person.name}}</h6>
+      </ion-text>
+      <ion-button fill="clear" slot="end" (click)="onPersonDelete(person.name)"><ion-icon name="trash" color="dark"></ion-icon></ion-button>
     </ion-item>
   
     <ion-card-content>
       <ion-list>
-        <form [formGroup]="vaccinePreferencesControl">
+        <form [formGroup]="person.preferenceControl">
           <ion-item>
             <ion-label>Fee Type</ion-label>
             <ion-select formControlName="fee_type_preference">
@@ -71,9 +73,9 @@
           <ion-item>
             <ion-label>Vaccine</ion-label>
             <ion-select formControlName="vaccine_preference">
-              <ion-select-option value="COVISHIELD">COVISHIELD</ion-select-option>
-              <ion-select-option value="COVAXIN">COVAXIN</ion-select-option>
-              <ion-select-option value="ANY">ANY</ion-select-option>
+              <ion-select-option value="COVISHIELD">Covishield</ion-select-option>
+              <ion-select-option value="COVAXIN">Covaxin</ion-select-option>
+              <ion-select-option value="ANY">Any</ion-select-option>
             </ion-select>
           </ion-item>
           <ion-item>
@@ -88,8 +90,18 @@
     </ion-card-content>
   </ion-card>
 
+  <div style="text-align: center;" *ngIf="personPreferencesControls.length">
+    <ion-button fill="outline" (click)="onNotify()">Notify <ion-icon slot="end" name="notifications"></ion-icon></ion-button>
+  </div>
+
+  <div style="text-align: center;" *ngIf="!personPreferencesControls.length">
+    <ion-text color="medium">
+      <p>Use the plus button to add a person's preferences</p>
+    </ion-text>
+  </div>
+
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="addClicked()">
+    <ion-fab-button (click)="presentInputName()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>

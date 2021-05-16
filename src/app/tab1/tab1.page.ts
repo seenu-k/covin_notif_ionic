@@ -8,7 +8,7 @@ import { ToastController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 
 import { DataService } from '../data.service';
-import { District, State } from '../dataModel';
+import { District, PersonPreferencesControl, State, PersonPreferences } from '../dataModel';
 
 @Component({
   selector: 'app-tab1',
@@ -24,14 +24,9 @@ export class Tab1Page implements OnInit {
   stateControl = new FormControl(null);
   districtControl = new FormControl({value: null, disabled: true});
   pinCodeControl = new FormControl('', Validators.pattern('^[1-9][0-9]{5}$'));
-  vaccinePreferencesControl = new FormGroup({
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    fee_type_preference: new FormControl('Any'),
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    min_age_limit_preference: new FormControl(18),
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    vaccine_preference: new FormControl('ANY')
-  });
+  selectedDistrictId: number;
+  selectedPinCode: string;
+  personPreferencesControls: PersonPreferencesControl[] = [];
 
   constructor(
     public actionSheetController: ActionSheetController,
@@ -50,21 +45,25 @@ export class Tab1Page implements OnInit {
       }
     });
     this.states = this.dataService.states.asObservable();
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    this.stateControl.valueChanges.subscribe((state_id: number) => {
-      this.districts = this.dataService.getDistricts(state_id);
+    this.stateControl.valueChanges.subscribe((stateId: number) => {
+      this.districts = this.dataService.getDistricts(stateId);
       this.districtControl.setValue(null);
       this.districtControl.enable();
     });
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    this.districtControl.valueChanges.subscribe((district_id: number) => {
-      if(district_id) {
-        console.log(district_id);
+    this.districtControl.valueChanges.subscribe((districtId: number) => {
+      if(districtId) {
+        this.selectedDistrictId = districtId;
+      }
+      else {
+        this.selectedDistrictId = null;
       }
     });
     this.pinCodeControl.valueChanges.subscribe((pinCode: string) => {
       if(pinCode.match('^[1-9][0-9]{5}$')) {
-        console.log(pinCode);
+        this.selectedPinCode = pinCode;
+      }
+      else {
+        this.selectedPinCode = null;
       }
     });
   }
@@ -101,7 +100,8 @@ export class Tab1Page implements OnInit {
         {
           name: 'name',
           type: 'text',
-          placeholder: 'Enter name'
+          placeholder: 'Enter name',
+          value: this.personPreferencesControls.length>0?'':this.userDisplayName
         }
       ],
       buttons: [
@@ -112,7 +112,7 @@ export class Tab1Page implements OnInit {
           text: 'Add',
           handler: (alertData: {name: string}) => {
             if(alertData.name) {
-              console.log(alertData.name);
+              this.personPreferencesControls.push({name: alertData.name, preferenceControl: this.getNewPreferenceControl()});
             }
             else {
               return false;
@@ -129,8 +129,32 @@ export class Tab1Page implements OnInit {
     this.locationType = locationChangeEvent.detail.value;
   }
 
-  addClicked() {
-    this.presentInputName();
+  getNewPreferenceControl() {
+    return new FormGroup({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      fee_type_preference: new FormControl('Any'),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      min_age_limit_preference: new FormControl(18),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      vaccine_preference: new FormControl('ANY')
+    });
+  }
+
+  onPersonDelete(name: string) {
+    this.personPreferencesControls.splice(this.personPreferencesControls.findIndex(person => person.name===name), 1);
+  }
+
+  onNotify() {
+    if(this.locationType==='district' && !this.selectedDistrictId) {
+      this.presentToast('Invalid District');
+      return;
+    }
+    if(this.locationType==='pincode' && !this.selectedPinCode) {
+      this.presentToast('Invalid PinCode');
+      return;
+    }
+    const personPreferences = this.personPreferencesControls
+      .map(person => ({...person.preferenceControl.value, name: person.name})) as PersonPreferences[];
   }
 
 }
