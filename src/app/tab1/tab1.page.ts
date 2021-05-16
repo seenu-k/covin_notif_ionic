@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+
+import { Observable } from 'rxjs';
 
 import { ActionSheetController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
 
 import { DataService } from '../data.service';
+import { District, State } from '../dataModel';
 
 @Component({
   selector: 'app-tab1',
@@ -13,6 +17,10 @@ import { DataService } from '../data.service';
 export class Tab1Page implements OnInit {
 
   userDisplayName: string;
+  states: Observable<State[]>;
+  districts: Observable<District[]>;
+  stateControl = new FormControl(null);
+  districtControl = new FormControl({value: null, disabled: true});
 
   constructor(
     public actionSheetController: ActionSheetController,
@@ -27,6 +35,19 @@ export class Tab1Page implements OnInit {
       }
       else {
         this.presentSignInSheet();
+      }
+    });
+    this.states = this.dataService.states.asObservable();
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    this.stateControl.valueChanges.subscribe((state_id: number) => {
+      this.districts = this.dataService.getDistricts(state_id);
+      this.districtControl.setValue(null);
+      this.districtControl.enable();
+    });
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    this.districtControl.valueChanges.subscribe((district_id: number) => {
+      if(district_id) {
+        console.log(district_id);
       }
     });
   }
@@ -54,6 +75,10 @@ export class Tab1Page implements OnInit {
       duration: 2500
     });
     toast.present();
+  }
+
+  onDistrictChange(districtEvent: {detail: {value: number}}) {
+    console.log(districtEvent.detail.value);
   }
 
 }

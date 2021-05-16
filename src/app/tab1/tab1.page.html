@@ -13,4 +13,23 @@
     </ion-toolbar>
   </ion-header>
   <p>{{userDisplayName}}</p>
+  <ion-list>
+    <ion-list-header>
+      <ion-label>
+        Header
+      </ion-label>
+    </ion-list-header>
+    <ion-item>
+      <ion-label>State</ion-label>
+      <ion-select placeholder="Select a State" interface="action-sheet" [formControl]="stateControl">
+        <ion-select-option *ngFor="let state of states | async" [value]="state.state_id">{{state.state_name}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>District</ion-label>
+      <ion-select placeholder="Select a District" interface="action-sheet" [formControl]="districtControl">
+        <ion-select-option *ngFor="let district of districts | async" [value]="district.district_id">{{district.district_name}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
 </ion-content>
