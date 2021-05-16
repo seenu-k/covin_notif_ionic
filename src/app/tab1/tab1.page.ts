@@ -17,6 +17,7 @@ import { District, State } from '../dataModel';
 export class Tab1Page implements OnInit {
 
   userDisplayName: string;
+  locationType = 'district';
   states: Observable<State[]>;
   districts: Observable<District[]>;
   stateControl = new FormControl(null);
@@ -81,6 +82,10 @@ export class Tab1Page implements OnInit {
       duration: 2500
     });
     toast.present();
+  }
+
+  locationChanged(locationChangeEvent: {detail: {value: string}}) {
+    this.locationType = locationChangeEvent.detail.value;
   }
 
 }

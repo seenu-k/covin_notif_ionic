@@ -12,26 +12,31 @@
       <ion-title size="large" style="text-align: center;">Vaccines</ion-title>
     </ion-toolbar>
   </ion-header>
-  <p>{{userDisplayName}}</p>
+  <ion-text>
+    <h4 *ngIf="userDisplayName" style="text-align: center;">Welcome, {{userDisplayName}}!</h4>
+  </ion-text>
   <ion-list>
-    <ion-list-header>
-      <ion-label>
-        Header
-      </ion-label>
-    </ion-list-header>
-    <ion-item>
+    <ion-segment (ionChange)="locationChanged($event)" value="district">
+      <ion-segment-button value="district">
+        <ion-label>By District</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="pincode">
+        <ion-label>By PinCode</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+    <ion-item *ngIf="locationType=='district'">
       <ion-label>State</ion-label>
       <ion-select placeholder="Select a State" interface="action-sheet" [formControl]="stateControl">
         <ion-select-option *ngFor="let state of states | async" [value]="state.state_id">{{state.state_name}}</ion-select-option>
       </ion-select>
     </ion-item>
-    <ion-item>
+    <ion-item *ngIf="locationType=='district'">
       <ion-label>District</ion-label>
       <ion-select placeholder="Select a District" interface="action-sheet" [formControl]="districtControl">
         <ion-select-option *ngFor="let district of districts | async" [value]="district.district_id">{{district.district_name}}</ion-select-option>
       </ion-select>
     </ion-item>
-    <ion-item>
+    <ion-item *ngIf="locationType=='pincode'">
       <ion-label position="floating">PinCode</ion-label>
       <ion-input [formControl]="pinCodeControl"></ion-input>
     </ion-item>
