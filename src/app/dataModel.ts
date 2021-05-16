@@ -20,6 +20,6 @@ export interface DistrictResponse {
     ttl: number;
 }
 
-export type FeeType = 'Free' | 'Paid';
-export type Vaccine = 'COVISHIELD' | 'COVAXIN';
-export type MinAgeLimit = 18 | 45;
+export type FeeTypePreference = 'Free' | 'Paid' | 'Any';
+export type VaccinePreference = 'COVISHIELD' | 'COVAXIN' | 'ANY';
+export type MinAgeLimitPreference = 18 | 45;
