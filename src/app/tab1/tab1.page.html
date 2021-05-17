@@ -38,7 +38,7 @@
     <ion-item *ngIf="locationType=='district'">
       <ion-label>District</ion-label>
       <ion-select placeholder="Select a District" interface="action-sheet" [formControl]="districtControl">
-        <ion-select-option *ngFor="let district of districts | async" [value]="district.district_id">{{district.district_name}}</ion-select-option>
+        <ion-select-option *ngFor="let district of districts" [value]="district.district_id">{{district.district_name}}</ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item *ngIf="locationType=='pincode'">
@@ -91,7 +91,7 @@
   </ion-card>
 
   <div style="text-align: center;" *ngIf="personPreferencesControls.length">
-    <ion-button fill="outline" (click)="onNotify()">Notify <ion-icon slot="end" name="notifications"></ion-icon></ion-button>
+    <ion-button fill="outline" (click)="onNotify()">Alert <ion-icon slot="end" name="notifications"></ion-icon></ion-button>
   </div>
 
   <div style="text-align: center;" *ngIf="!personPreferencesControls.length">

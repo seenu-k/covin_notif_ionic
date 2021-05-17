@@ -20,7 +20,7 @@ export class Tab1Page implements OnInit {
   userDisplayName: string;
   locationType = 'district';
   states: Observable<State[]>;
-  districts: Observable<District[]>;
+  districts: District[];
   stateControl = new FormControl(null);
   districtControl = new FormControl({value: null, disabled: true});
   pinCodeControl = new FormControl('', Validators.pattern('^[1-9][0-9]{5}$'));
@@ -46,7 +46,7 @@ export class Tab1Page implements OnInit {
     });
     this.states = this.dataService.states.asObservable();
     this.stateControl.valueChanges.subscribe((stateId: number) => {
-      this.districts = this.dataService.getDistricts(stateId);
+      this.dataService.getDistricts(stateId).subscribe((districts) => this.districts = districts);
       this.districtControl.setValue(null);
       this.districtControl.enable();
     });
