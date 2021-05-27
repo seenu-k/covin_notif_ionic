@@ -8,9 +8,10 @@ import '@codetrix-studio/capacitor-google-auth';
 import { Plugins } from '@capacitor/core';
 
 import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireDatabase } from '@angular/fire/database';
 import firebase from 'firebase/app';
 
-import { StatesResponse, State, DistrictResponse } from './dataModel';
+import { StatesResponse, State, DistrictResponse, User } from './dataModel';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,7 @@ export class DataService {
 
   constructor(
     public auth: AngularFireAuth,
+    public db: AngularFireDatabase,
     private http: HttpClient
   ) {
     this.getStates().subscribe(states => {
@@ -47,6 +49,15 @@ export class DataService {
   getDistricts(state_id: number) {
     return this.http.get<DistrictResponse>(`https://cdn-api.co-vin.in/api/v2/admin/location/districts/${state_id}`)
       .pipe(map(districtResponse => districtResponse.districts));
+  }
+
+  async setUser(user: User) {
+    const uid = (await this.auth.currentUser).uid;
+    return this.db.object(`users/${uid}`).set(user);
+  }
+
+  addLocation(location: number | string) {
+    return this.db.object(`locations/${location}`).set(true);
   }
 
 }

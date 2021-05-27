@@ -8,7 +8,7 @@ import { ToastController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 
 import { DataService } from '../data.service';
-import { District, PersonPreferencesControl, State, PersonPreferences } from '../dataModel';
+import { District, PersonPreferencesControl, State, PersonPreferences, User, LocationType } from '../dataModel';
 
 @Component({
   selector: 'app-tab1',
@@ -18,7 +18,7 @@ import { District, PersonPreferencesControl, State, PersonPreferences } from '..
 export class Tab1Page implements OnInit {
 
   userDisplayName: string;
-  locationType = 'district';
+  locationType: LocationType = 'district';
   states: Observable<State[]>;
   districts: District[];
   stateControl = new FormControl(null);
@@ -125,7 +125,7 @@ export class Tab1Page implements OnInit {
     await alert.present();
   }
 
-  locationChanged(locationChangeEvent: {detail: {value: string}}) {
+  locationChanged(locationChangeEvent: {detail: {value: LocationType}}) {
     this.locationType = locationChangeEvent.detail.value;
   }
 
@@ -155,6 +155,26 @@ export class Tab1Page implements OnInit {
     }
     const personPreferences = this.personPreferencesControls
       .map(person => ({...person.preferenceControl.value, name: person.name})) as PersonPreferences[];
+    const user: User = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      location_type: this.locationType,
+      persons: personPreferences,
+    };
+    if(this.locationType==='district') {
+      user.location_district = this.selectedDistrictId;
+    }
+    else {
+      user.location_pincode = this.selectedPinCode;
+    }
+    this.dataService.setUser(user).then(() => {
+      this.dataService.addLocation(this.locationType==='district'?this.selectedDistrictId:this.selectedPinCode).then(() => {
+        this.presentToast('Preferences Successfully Saved');
+      }).catch(() => {
+        this.presentToast('Error saving preferences');
+      });
+    }).catch(() => {
+      this.presentToast('Error saving preferences!');
+    });
   }
 
 }
