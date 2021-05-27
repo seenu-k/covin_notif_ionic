@@ -53,6 +53,16 @@ export class Tab1Page implements OnInit {
             this.locationType = 'pincode';
             this.pinCodeControl.setValue(userDetails.location_pincode);
           }
+          userDetails.persons.forEach(person => {
+            this.personPreferencesControls.push({
+              name: person.name,
+              preferenceControl: this.getNewPreferenceControl(
+                person.fee_type_preference,
+                person.min_age_limit_preference,
+                person.vaccine_preference
+                )
+            });
+          });
         }).catch(() => {
           this.presentToast('Error retrieving saved preferences');
         });
