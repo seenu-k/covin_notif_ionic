@@ -24,7 +24,10 @@ export class Tab1Page implements OnInit {
   stateControl = new FormControl(null);
   districtControl = new FormControl({value: null, disabled: true});
   pinCodeControl = new FormControl('', Validators.pattern('^[1-9][0-9]{5}$'));
+  selectedStateId: number;
   selectedDistrictId: number;
+  setDistrictFromDatabase = false;
+  districtFromDatabase: number;
   selectedPinCode: string;
   personPreferencesControls: PersonPreferencesControl[] = [];
 
@@ -39,6 +42,20 @@ export class Tab1Page implements OnInit {
     this.dataService.auth.user.subscribe((user) => {
       if(user) {
         this.userDisplayName = user.displayName;
+        this.dataService.getUser(user.uid).then((userDetails) => {
+          if(userDetails.location_type==='district') {
+            this.locationType = 'district';
+            this.stateControl.setValue(userDetails.location_state);
+            this.districtFromDatabase = userDetails.location_district;
+            this.setDistrictFromDatabase = true;
+          }
+          else {
+            this.locationType = 'pincode';
+            this.pinCodeControl.setValue(userDetails.location_pincode);
+          }
+        }).catch(() => {
+          this.presentToast('Error retrieving saved preferences');
+        });
       }
       else {
         this.presentSignInSheet();
@@ -46,16 +63,27 @@ export class Tab1Page implements OnInit {
     });
     this.states = this.dataService.states.asObservable();
     this.stateControl.valueChanges.subscribe((stateId: number) => {
-      this.dataService.getDistricts(stateId).subscribe((districts) => this.districts = districts);
-      this.districtControl.setValue(null);
+      this.dataService.getDistricts(stateId).subscribe((districts) => {
+        this.districts = districts;
+        if(!districts.map(district => district.district_id).includes(this.districtControl.value)) {
+          this.districtControl.setValue(null);
+        }
+        if(this.setDistrictFromDatabase) {
+          this.districtControl.setValue(this.districtFromDatabase);
+          this.setDistrictFromDatabase = false;
+        }
+      });
+      //this.districtControl.setValue(null);
       this.districtControl.enable();
     });
     this.districtControl.valueChanges.subscribe((districtId: number) => {
       if(districtId) {
         this.selectedDistrictId = districtId;
+        this.selectedStateId = this.stateControl.value;
       }
       else {
         this.selectedDistrictId = null;
+        this.selectedStateId = null;
       }
     });
     this.pinCodeControl.valueChanges.subscribe((pinCode: string) => {
@@ -129,14 +157,15 @@ export class Tab1Page implements OnInit {
     this.locationType = locationChangeEvent.detail.value;
   }
 
-  getNewPreferenceControl() {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  getNewPreferenceControl(fee_type_preference = 'Any', min_age_limit_preference = 18, vaccine_preference = 'ANY') {
     return new FormGroup({
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      fee_type_preference: new FormControl('Any'),
+      fee_type_preference: new FormControl(fee_type_preference),
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      min_age_limit_preference: new FormControl(18),
+      min_age_limit_preference: new FormControl(min_age_limit_preference),
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      vaccine_preference: new FormControl('ANY')
+      vaccine_preference: new FormControl(vaccine_preference)
     });
   }
 
@@ -162,6 +191,7 @@ export class Tab1Page implements OnInit {
     };
     if(this.locationType==='district') {
       user.location_district = this.selectedDistrictId;
+      user.location_state = this.selectedStateId;
     }
     else {
       user.location_pincode = this.selectedPinCode;

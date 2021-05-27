@@ -42,6 +42,7 @@ export type LocationType = 'district' | 'pincode';
 
 export interface User {
     location_type: LocationType;
+    location_state?: number;
     location_district?: number;
     location_pincode?: string;
     persons: PersonPreferences[];

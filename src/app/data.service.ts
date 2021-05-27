@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 
 import '@codetrix-studio/capacitor-google-auth';
 import { Plugins } from '@capacitor/core';
@@ -58,6 +58,10 @@ export class DataService {
 
   addLocation(location: number | string) {
     return this.db.object(`locations/${location}`).set(true);
+  }
+
+  getUser(uid: string) {
+    return this.db.object<User>(`users/${uid}`).valueChanges().pipe(take(1)).toPromise();
   }
 
 }
