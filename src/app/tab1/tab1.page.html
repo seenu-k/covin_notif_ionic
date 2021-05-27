@@ -21,7 +21,7 @@
         <h5>Location Preferences</h5>
       </ion-text>
     </ion-list-header>
-    <ion-segment (ionChange)="locationChanged($event)" value="district">
+    <ion-segment [(ngModel)]="locationType">
       <ion-segment-button value="district">
         <ion-label>By District</ion-label>
       </ion-segment-button>

@@ -163,9 +163,9 @@ export class Tab1Page implements OnInit {
     await alert.present();
   }
 
-  locationChanged(locationChangeEvent: {detail: {value: LocationType}}) {
-    this.locationType = locationChangeEvent.detail.value;
-  }
+  // locationChanged(locationChangeEvent: {detail: {value: LocationType}}) {
+  //   this.locationType = locationChangeEvent.detail.value;
+  // }
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   getNewPreferenceControl(fee_type_preference = 'Any', min_age_limit_preference = 18, vaccine_preference = 'ANY') {
